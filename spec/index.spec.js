@@ -13,4 +13,9 @@ describe('sortJobs', () => {
     expect(sortJobs('a b c')).to.equal('abc');
     expect(sortJobs('d e f')).to.equal('def');
   });
+  it.only('return multiple jobs ordered', () => {
+    expect(sortJobs('a =>\nb => c\nc => f\nd => a\ne => b\nf =>')).to.equal(
+      'afcdbe'
+    );
+  });
 });
