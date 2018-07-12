@@ -13,10 +13,15 @@ describe('sortJobs', () => {
     expect(sortJobs('a b c')).to.equal('abc');
     expect(sortJobs('d e f')).to.equal('def');
   });
-  it('return the jobs ordered in a string when passed jobs with dependants', () => {
+  it('returns the jobs ordered in a string when passed jobs with dependants', () => {
     expect(sortJobs('a =>\nb => c\nc =>')).to.equal('acb');
     expect(sortJobs('a =>\nb => c\nc => f\nd => a\ne => b\nf =>')).to.equal(
       'afcdbe'
+    );
+  });
+  it('returns an error if any job depends on itself', () => {
+    expect(sortJobs('a =>\nb =>\nc => c')).to.equal(
+      'Jobs cannot depend on themselves.'
     );
   });
 });
