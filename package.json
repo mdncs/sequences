@@ -1,10 +1,23 @@
 {
   "name": "sequences",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "# Intro",
+  "main": "sequences.js",
+  "dependencies": {
+    "chai": "^4.1.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.5",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.13.0",
+    "mocha": "^5.2.0"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./spec/*",
+    "lint": "eslint ./",
+    "precommit": "npm test",
+    "posttest": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -16,9 +29,5 @@
   "bugs": {
     "url": "https://github.com/mdncs/sequences/issues"
   },
-  "homepage": "https://github.com/mdncs/sequences#readme",
-  "devDependencies": {
-    "chai": "^4.1.2",
-    "mocha": "^5.2.0"
-  }
+  "homepage": "https://github.com/mdncs/sequences#readme"
 }
