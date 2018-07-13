@@ -24,4 +24,9 @@ describe('sortJobs', () => {
       'Jobs cannot depend on themselves.'
     );
   });
+  it('returns an error where jobs have circular dependencies', () => {
+    expect(sortJobs('a =>\nb => c\nc => f\nd => a\ne =>\nf => b')).to.equal(
+      'Jobs cannot have circular dependencies.'
+    );
+  });
 });

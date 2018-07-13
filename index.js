@@ -53,6 +53,9 @@ function addJobsConditionally(jobPairs, err) {
       else jobString = dependant + jobString;
     }
   }
+  // once all jobs have been added based on dependants, check for circular dependencies, i.e. first and last job in string are the same
+  if (jobString[0] === jobString[jobString.length - 1])
+    return 'Jobs cannot have circular dependencies.';
   return jobString;
 }
 

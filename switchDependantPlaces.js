@@ -39,6 +39,7 @@ function switchDepPlaces(jobs, dependants, err) {
       i--;
     }
   }
+
   return jobs.join('');
 }
 
