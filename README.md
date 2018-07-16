@@ -1,148 +1,96 @@
 
 # sequences
 
-## Intro
+## Description
 
-The purpose of this exercise is to see how you approach a problem, and how you solve it. We’re interested to see how you structureyour Ruby code, your command of the language and good design and testing principles, bear this in mind throughout.
+This repo consists of a main function sortJobs() which takes an input in the format of "letter =>" (for single jobs with no dependants) or "letter =>\nletter =>\nletter =>" (for multiple jobs with no dependants) or "leter => letter\nletter => letter" (for multiple jobs with dependats) etc. and returns the jobs sorted with the dependants places ahead of the jobs depending on them.
 
-HINT: Start with a method that accepts a single string argument and returns a string (or a collection) which represents the orderedsequence of jobs (since each job is a single character).
+A funtional approach was initially employed in creating pure functions which would then be called within the main sortJobs() function (as evident from the commit history). The functions were then all refactored into one class SortedJobsWithDependants which is then called as a constructor and creates a string wwith ordered jobs within the sortJobs() function. This OOP approach is more in line with the OOP style in Ruby.
 
-HINT: Brownie points will be given for showing us your working (notes, commit history, some kind of idea how you approached the problem.
+The main function sortJobs() handles some of the base cases, e.g. empty string passed to the function.
+All necessary loops have been done with a "for" loop instead of JS array methods like forEach() or reduce() since "for" loops are computationally less intensive and also faster.
 
-HINT: We’re pretty keen on tested code. Have Fun.
+## Cases
 
-## The Challenge
-
-Imagine we have a list of jobs, each represented by a character. Because certain jobs must be done before others, a job may have adependency on another job. For example, a may depend on b, meaning the final sequence of jobs should place b before a. If a has nodependency, the position of a in the final sequence does not matter. Given you’re passed an empty string (no jobs), the result should be an empty sequence.
-
-1. Case for empty string:
-    ```
-    !str.length ? ''
-    ```
-2. Base cases: if there are no dependants at all, replace any non-letter character with an empty string. Write a function sortJobs() which checks for empty strings and for any cases without any dependents.
-
-    ```
-    !str.includes('=>') ? str.replace(/\s/g, '')
-    ```
-
-    - Given the following job structure, the result should be a sequence consisting of a single job a:
-
-        - a =>
-
-    - Given the following job structure, he result should be a sequence containing all three jobs abc in no significant order:
-
-        - a =>
-        - b =>
-        - c =>
-
-    - Given the following job structure, the result should be a sequence that positions c before b, containing all three jobs abc:
-
-        - a =>
-        - b => c
-        - c =>
-
-3. Cases where jobs have dependants: If sortJobs() has not already returned, it returns a new sorted list constructed by a class SortedJobsWithDependants.
-
-    - Step 1: write a class SortedJobsWithDependants with a constructor that receives a string and returns a list of jobs sorted by function addJobsConditionally() based on their dependencies.
-
+1. Main base cases: Write a function sortJobs() which checks for empty strings and for single, no-dependant jobs.
+    - Case for empty string:
         ```
-        class SortedJobsWithDependants {
-
-          constructor(string) {
-            this.string = string;
-            this.sortedWithDependants = this.addJobsConditionally();
-          }
-        }
+        !str.length ? ''
         ```
-
-    - Step 2: write a function createReferenceArray() which creates a reference object for key/value pairs of jobs and dependants, then returns an array with nested arrays consisting of job/dependant pairs:
-
+    - Case for single job with no dependants:
         ```
+        str.length === 4 && str.match(/[a-z]{1} =>/) ? str[0]
+        ```
+2. Non-base cases: 
+- If sortJobs() has not already returned, it returns a new sorted list constructed by a class SortedJobsWithDependants. The method createReferenceArray() first creates a reference object for key/value pairs of jobs and dependants, then returns an array with nested arrays consisting of job/dependant pairs:
+
         createReferenceArray() {
 
           const refObj = {};
-          this.string.split('\n').forEach(jobString => !jobString[5]
-              ? (refObj[jobString[0]] = undefined)
-              : (refObj[jobString[0]] = jobString[5]));
+          const jobArr = this.string.split('\n');
+          for (let i = 0; i < jobArr.length; i++) {
+            let job = jobArr[i];
+            !job[5]
+              ? (refObj[job[0]] = undefined)
+              : (refObj[job[0]] = job[5]);
+          }
           return Object.entries(refObj);
         }
-        ```
-    - Step 3: write the function addJobsConditionally() which takes the previously created reference array, creates an empty string as an accumulator, then loops through the array and destructures the job and the dependants for each nested array for simplicity (instead of working with array[i][0] and array[i][1]). Although array methods like .forEach() and .reduce() can also be used, a "for" loop is the fastest way to loop through an array.
-
-        ```
-        addJobsConditionally() {
         
+- The final sorted list is created by the class method addJobsConditionally() which calls the createReferenceArray() method, then uses a "for" loop to destructure the job and the dependants for each nested array for simplicity (instead of working with array[i][0] and array[i][1]), and then check for different conditions and add jobs/dependants to an empty string conditionally:
+
+    ```
+    addJobsConditionally() {
           const jobPairs = this.createReferenceArray();
           let jobString = '';
           for (let i = 0; i < jobPairs.length; i++) {
             const [job, dependant] = jobPairs[i];
           }
         }
+
+- While looping, the method conditionally adds letters to the initially empty string (use of ternary operator instead of "if" statements for cleaner code):
+
+    - no dependants (i.e. if dependant is undefined, and string does not already include the job, then concatenate the job to the already-existing string):
         ```
-
-        While looping, the function conditionally adds letters to the initially empty string (use of ternary operator instead of "if" statements for cleaner code):
-
-        ```
-        // if the job has no dependant and has not yet been added
-
         if (!dependant) {
           if (!jobString.includes(job)) jobString += job;
         }
         ```
-        For cases where the dependant is not undefined:
-        
+    - with dependants not already in string (i.e. if dependancy has not been satisfied and job does not exist in the string, first add the dependant to ensure dependency is satisfied, then add job):
         ```
-        // if the string does not include the job nor the dependant, add them both with the dependant first:
-
         !jobString.includes(job) && !jobString.includes(dependant) ?
-          jobString += dependant + job;
+            jobString += dependant + job
         ```
-        or else: 
+    - with dependants already in string (i.e. dependancy has already been satisfied):
         ```
-        // if the dependency has already been satisfied, the job can now be added:
-
         jobString.includes(dependant) ? jobString += job
         ```
-        or in any other case:
+    - all other cases, add the dependant at the very beginning of the string to ensure dependancy is satisfied:
         ```
-        // add the dependant at the beginning of the string
-
-        : jobString = dependant + jobString;
+        jobString = dependant + jobString;
         ```
-        Then check for errors before returning the string.
+
+3. More edge cases and cases with error output: 
+
+- before creating the reference array, the method checkForInvalidData() splits the job string into an array of jobs by new lines, then ensures the data passed is in the format "letter =>" for no-dependant jobs or "letter => letter" for jobs with dependants. If the job is neither 4-characters long AND the correct format, OR 6-characters long AND the correct format, then this method returns a value of false, which is then checked in the createReferenceArray() method to ensure format is valid and returns an error if it is not.
 
 
-    - Given the following job structure, the result should be a sequence that positions f before c, c before b, b before e and a before d containing all six jobs abcdef.
-
-        - a =>
-        - b => c
-        - c => f
-        - d => a
-        - e => b
-        - f =>
 
 4. Cases with error output:
 
-    Immediately after entering the "for" loop, check that the job is not the same as its dependant before running the rest of the code. If they are, return error.
+- Illegal characters in data: Immediately after entering the "for" loop and destructuring the nested arrays, the method addJobsConditionally() checks that neither the job nor the dependant contain any illegal characters (i.e. anything but letters), such as digits or special characters; else, return an error for invalid data.
+
+        ```
+        if (job.match(/\d|\W/) || (dependant && dependant.match(/\d|\W/))) return 'The data is invalid.';
+        ```
+    
+- Self-dependency: Then, the methos checks that the job is not the same as its dependant before running the rest of the code. If they are the same, it returns an error for self-dependency.
     ```
     if (job === dependant) return 'Jobs cannot depend on themselves.';
     ```
-    - Given the following job structure, the result should be an error stating that jobs can’t depend on themselves.
-
-        - a =>
-        - b =>
-        - c => c
-
-    Once all jobs have been added to the string: check for circular dependencies, i.e. first and last job in string are the same; if no circular dependency, return the job string back to the main function
+    
+- Circular dependency: Once all jobs have been added to the string: check for circular dependencies, i.e. first and last job in string are the same; if no circular dependency, return the job string back to the main function
     ```
     return jobString[0] === jobString[jobString.length - 1] ? 'Jobs cannot have circular dependencies.' : jobString;
     ```
-
-    -  Given the following job structure, the result should be an error stating that jobs can’t have circular dependencies.
-        - a =>
-        - b => c
-        - c => f
-        - d => a
-        - e =>
-        - f => b
     
