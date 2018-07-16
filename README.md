@@ -72,9 +72,18 @@ All necessary loops have been done with a "for" loop instead of JS array methods
 
 3. More edge cases and cases with error output: 
 
-- before creating the reference array, the method checkForInvalidData() splits the job string into an array of jobs by new lines, then ensures the data passed is in the format "letter =>" for no-dependant jobs or "letter => letter" for jobs with dependants. If the job is neither 4-characters long AND the correct format, OR 6-characters long AND the correct format, then this method returns a value of false, which is then checked in the createReferenceArray() method to ensure format is valid and returns an error if it is not.
+- before creating the reference array, the method checkForInvalidData() takes an array of jobs, then ensures the data passed is in the format "letter =>" for no-dependant jobs or "letter => letter" for jobs with dependants. If the job is neither 4-characters long AND the correct format, OR 6-characters long AND the correct format, then this method returns a value of false, which is then checked in the createReferenceArray() method to ensure format is valid and returns an error if it is not.
 
-
+    ```
+    for (let i = 0; i < array.length; i++) {
+      if (!(array[i].length === 4 && /[a-z]{1} =>/gi.test(array[i])
+        || (array[i].length === 6 && /[a-z]{1} => [a-z]{1}/gi.test(array[i])))) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+    ```
 
 4. Cases with error output:
 
