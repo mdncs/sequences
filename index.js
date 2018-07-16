@@ -38,8 +38,8 @@ class SortedJobsWithDependants {
 
   checkForInvalidData(array) {
     for (let i = 0; i < array.length; i++) {
-      if (!(array[i].length === 4 && /[a-z]{1} =>/.test(array[i])
-        || (array[i].length === 6 && /[a-z]{1} => [a-z]{1}/.test(array[i])))) {
+      if (!(array[i].length === 4 && /[a-z]{1} =>/gi.test(array[i])
+        || (array[i].length === 6 && /[a-z]{1} => [a-z]{1}/gi.test(array[i])))) {
         return false;
       } else {
         return true;

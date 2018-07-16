@@ -15,6 +15,7 @@ describe('sortJobs', () => {
   });
   it('returns the jobs ordered by dependency when passed a string with one dependency relationship', () => {
     expect(sortJobs('a => b')).to.equal('ba');
+    expect(sortJobs('A =>\nb => A')).to.equal('Ab');
     expect(sortJobs('b =>\nf => b')).to.equal('bf');
   });
   it('returns the jobs ordered in a string when passed jobs with dependants', () => {
@@ -23,6 +24,7 @@ describe('sortJobs', () => {
     expect(sortJobs('a =>\nb => c\nc => f\nd => a\ne => b\nf =>')).to.equal(
       'facbde'
     );
+    expect(sortJobs('a =>\nB => c\nc =>')).to.equal('acB');
   });
   it('returns an error when the data passed is invalid', () => {
     expect(sortJobs('3 =>')).to.equal('The data is invalid.');
