@@ -10,6 +10,11 @@ A funtional approach was initially employed in creating pure functions which wou
 The main function sortJobs() handles some of the base cases, e.g. empty string passed to the function.
 All necessary loops have been done with a "for" loop instead of JS array methods like forEach() or reduce() since "for" loops are computationally less intensive and also faster.
 
+The initial approach (as evident in previous commits) was to modify the initial string given by creating 2 arrays (one for jobs and one for dependants), then checking for equivalency and indexes in order to switch places between jobs and dependants based on positions in the dependants arrays. However, checking for circular dependency would be unnecessarily complex with this approach (e.g. with a "while" loop instead of a "for loop, or by creating a job string anyway). In this case, simply adding jobs conditionally to a string seemed much simpler than switching jobs' places in an array based on indexes in another array.
+
+The expected outcome was tested at each step via TDD with Mocha and Chai. Individual class methods have not been tested, as their outcome already has (e.g. checking for invalid data formats).
+
+
 ## Cases
 
 1. Main base cases: Write a function sortJobs() which checks for empty strings and for single, no-dependant jobs.
