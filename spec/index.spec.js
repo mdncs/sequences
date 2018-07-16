@@ -6,18 +6,29 @@ describe('sortJobs', () => {
     expect(sortJobs('')).to.equal('');
   });
   it('returns the job when passed a string with a single job and no dependants', () => {
-    expect(sortJobs('a')).to.equal('a');
-    expect(sortJobs('f')).to.equal('f');
+    expect(sortJobs('a =>')).to.equal('a');
+    expect(sortJobs('f =>')).to.equal('f');
   });
   it('returns the jobs as a string when passed jobs with no dependants', () => {
-    expect(sortJobs('a b c')).to.equal('abc');
-    expect(sortJobs('d e f')).to.equal('def');
+    expect(sortJobs('a =>\nb =>\nc =>')).to.equal('abc');
+    expect(sortJobs('d =>\ne =>\nf =>')).to.equal('def');
+  });
+  it('returns the jobs ordered by dependency when passed a string with one dependency relationship', () => {
+    expect(sortJobs('a => b')).to.equal('ba');
+    expect(sortJobs('b =>\nf => b')).to.equal('bf');
   });
   it('returns the jobs ordered in a string when passed jobs with dependants', () => {
-    // expect(sortJobs('a =>\nb => c\nc =>')).to.equal('acb');
+    expect(sortJobs('b => c\nc => f')).to.equal('fcb');
+    expect(sortJobs('a =>\nb => c\nc =>')).to.equal('acb');
     expect(sortJobs('a =>\nb => c\nc => f\nd => a\ne => b\nf =>')).to.equal(
       'facbde'
     );
+  });
+  it('returns an error when the data passed is invalid', () => {
+    expect(sortJobs('3 =>')).to.equal('The data is invalid.');
+    expect(sortJobs('!')).to.equal('The data is invalid.');
+    expect(sortJobs('a =>\n5 => a')).to.equal('The data is invalid.');
+    expect(sortJobs('ab =>')).to.equal('The data is invalid.');
   });
   it('returns an error if any job depends on itself', () => {
     expect(sortJobs('a =>\nb =>\nc => c')).to.equal(

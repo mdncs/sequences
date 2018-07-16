@@ -1,14 +1,16 @@
 function sortJobs(str) {
   // deal with all base cases here, so that if there are no dependants at all then the conditional sorting function should not run
   // (i.e. more efficiency)
+
   const { sortedWithDependants } = new SortedJobsWithDependants(str);
+
   // case for empty string
   return !str.length ? ''
 
-    // case for jobs with no dependants
-    : !str.includes('=>') ? str.replace(/\s/g, '')
+    // case for only one job with no dependants
+    : str.length === 4 && str.match(/[a-z]{1} =>/) ? str[0]
 
-      // case for jobs with dependants
+      // case for job with dependants
       : sortedWithDependants;
 }
 
@@ -23,10 +25,26 @@ class SortedJobsWithDependants {
 
     // create reference array with key-value pairs for job: dependant
     const refObj = {};
-    this.string.split('\n').forEach(jobString => !jobString[5]
-      ? (refObj[jobString[0]] = undefined)
-      : (refObj[jobString[0]] = jobString[5]));
+    const jobArr = this.string.split('\n');
+    if (!this.checkForInvalidData(jobArr)) return 'The data is invalid.';
+    for (let i = 0; i < jobArr.length; i++) {
+      let job = jobArr[i];
+      !job[5]
+        ? (refObj[job[0]] = undefined)
+        : (refObj[job[0]] = job[5]);
+    }
     return Object.entries(refObj);
+  }
+
+  checkForInvalidData(array) {
+    for (let i = 0; i < array.length; i++) {
+      if (!(array[i].length === 4 && /[a-z]{1} =>/.test(array[i])
+        || (array[i].length === 6 && /[a-z]{1} => [a-z]{1}/.test(array[i])))) {
+        return false;
+      } else {
+        return true;
+      }
+    }
   }
 
   addJobsConditionally() {
@@ -62,6 +80,9 @@ class SortedJobsWithDependants {
             : jobString = dependant + jobString;
       }
     }
+
+    // check again for special characters or digits in the resulting string
+    if (/\d|\W/.test(jobString)) return 'The data is invalid.';
 
     // once all jobs have been added based on dependants, check for circular dependencies, i.e. first and last job in string are the same
     // if no circular dependency, return the job string back to the sortJobs function
