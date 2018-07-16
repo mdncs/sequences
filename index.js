@@ -26,17 +26,25 @@ class SortedJobsWithDependants {
     // create reference array with key-value pairs for job: dependant
     const refObj = {};
     const jobArr = this.string.split('\n');
+    // checks that data format matches what should be passed
     if (!this.checkForInvalidData(jobArr)) return 'The data is invalid.';
+
+    // if data format is valid, creates a reference object of job: dependant key-value pairs
     for (let i = 0; i < jobArr.length; i++) {
       let job = jobArr[i];
       !job[5]
         ? (refObj[job[0]] = undefined)
         : (refObj[job[0]] = job[5]);
     }
+    // returns an array of nested arrays of job / job: dependant pairs
     return Object.entries(refObj);
   }
 
   checkForInvalidData(array) {
+    // loops through the array of jobs and checks for two cases (regardless of lower/upper case letters)
+    // - if job either has no dependants (i.e. is 4 characters long) AND does not match the format of letter + ' =>'
+    // OR job has dependants (i.e. 6 chars long) AND does not match the format of letter + ' => ' + letter
+    // return a falsy value which then returns an invalid data error back in createReferenceArray() before going through rest of code
     for (let i = 0; i < array.length; i++) {
       if (!(array[i].length === 4 && /[a-z]{1} =>/gi.test(array[i])
         || (array[i].length === 6 && /[a-z]{1} => [a-z]{1}/gi.test(array[i])))) {
