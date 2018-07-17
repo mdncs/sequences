@@ -5,14 +5,14 @@
 
 This repo consists of a main function sortJobs() which takes an input in the format of "letter =>" (for single jobs with no dependants) or "letter =>\nletter =>\nletter =>" (for multiple jobs with no dependants) or "leter => letter\nletter => letter" (for multiple jobs with dependats) etc. and returns the jobs sorted with the dependants places ahead of the jobs depending on them.
 
-A funtional approach was initially employed in creating pure functions which would then be called within the main sortJobs() function (as evident from the commit history). The functions were then all refactored into one class SortedJobsWithDependants which is then called as a constructor and creates a string wwith ordered jobs within the sortJobs() function. This OOP approach is more in line with the OOP style in Ruby.
+A funtional approach was initially employed in creating pure functions which would then be called within the main sortJobs() function (as evident from the commit history). The functions were then all refactored into one class SortedJobsWithDependants which is then called as a constructor and creates a string with ordered jobs within the sortJobs() function. This OOP approach is more in line with the OOP style in Ruby.
 
 The main function sortJobs() handles some of the base cases, e.g. empty string passed to the function.
-All necessary loops have been done with a "for" loop instead of JS array methods like forEach() or reduce() since "for" loops are computationally less intensive and also faster.
+All necessary loops have been done with a "for" loop instead of JS array methods like forEach() or reduce() since "for" loops are less computationally intensive and also faster.
 
-The initial approach (as evident in previous commits) was to modify the initial string given by creating 2 arrays (one for jobs and one for dependants), then checking for equivalency and indexes in order to switch places between jobs and dependants based on positions in the dependants arrays. However, checking for circular dependency would be unnecessarily complex with this approach (e.g. with a "while" loop instead of a "for loop, or by creating a job string anyway). In this case, simply adding jobs conditionally to a string seemed much simpler than switching jobs' places in an array based on indexes in another array.
+The initial approach (as evident in previous commits) was to modify the initial string given by creating 2 arrays (one for jobs and one for dependants), then checking for equivalency and indexes in order to switch places between jobs and dependants based on positions in the dependants array. However, checking for circular dependency would be unnecessarily complex with this approach (e.g. with a "while" loop within a "for" loop, or by creating a job string anyway). In this case, simply adding jobs conditionally to a string seemed much simpler than switching jobs' places in an array based on indexes in a second array.
 
-The expected outcome was tested at each step via TDD with Mocha and Chai. Individual class methods have not been tested, as their outcome already has (e.g. checking for invalid data formats).
+The expected outcome was tested at each step via TDD with Mocha and Chai. Individual class methods have not been tested, as their outcome already has been (e.g. checking for invalid data formats via main function).
 
 
 ## Cases
